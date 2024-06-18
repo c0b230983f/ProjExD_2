@@ -5,11 +5,16 @@ import pygame as pg
 
 
 WIDTH, HEIGHT = 1400, 800
+sum_mv = [0, 0]
 DELTA = {
     pg.K_UP: (0,-5),
     pg.K_DOWN: (0,+5),
     pg.K_LEFT: (-5,0),
     pg.K_RIGHT: (+5,0),
+}
+
+HOUGAKU = {
+
 }
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -29,7 +34,8 @@ def check_bound(rct:pg.Rect) -> tuple[bool,bool]:
 
 
 def main():
-    a = 0
+    global sum_mv
+    muki = 0
     pg.display.set_caption("逃げろ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     bg_img = pg.image.load("fig/pg_bg.jpg")    
@@ -56,44 +62,46 @@ def main():
                 return
         if kk_rct.colliderect(bb_rct):  #衝突判定
             return #ゲームオーバー
-        #for r in range(1,11):
-          #  bb_img = pg.surface((20*r,20*r))
-          #  pg.draw.circle(bb_img,(255,0,0),(10*r,10*r),10*r)
+        """
+        for r in range(1,11):
+            bb_img = pg.surface((20*r,20*r))
+            pg.draw.circle(bb_img,(255,0,0),(10*r,10*r),10*r)
+        """
         screen.blit(bg_img, [0, 0]) 
 
         key_lst = pg.key.get_pressed()
-        sum_mv = [0, 0]
+        #sum_mv = [0, 0]
         for k,v in DELTA.items():
             if key_lst[k]:
                 sum_mv[0] += v[0]
                 sum_mv[1] += v[1]
         if sum_mv[0] == -5 and sum_mv[1] == -5:
-            a = -1
+            muki = -1
         elif sum_mv[0] == 0 and sum_mv[1] == -5:
             kk_img = pg.transform.flip(kk_img, True, False)
-            a = 2
+            muki = 2
         elif sum_mv[0] == +5 and sum_mv[1] == -5:
             kk_img = pg.transform.flip(kk_img, True, False)
-            a = 1
+            muki = 1
         elif sum_mv[0] == +5 and sum_mv[1] == 0:
             kk_img = pg.transform.flip(kk_img, True, False)
-            a = 0
+            muki = 0
         elif sum_mv[0] == +5 and sum_mv[1] == +5:
             kk_img = pg.transform.flip(kk_img, True, False)
-            a = -1
+            muki = -1
         elif sum_mv[0] == 0 and sum_mv[1] == +5:
             kk_img = pg.transform.flip(kk_img, True, False)
-            a = -2
+            muki = -2
         elif sum_mv[0] == -5 and sum_mv[1] == +5:
-            a = 2
+            muki = 2
         elif sum_mv[0] == -5 and sum_mv[1] == 0:
-            a = 0
+            muki = 0
         elif sum_mv[0] == 0 and sum_mv[1] == 0:
-            a = 0
+            muki = 0
 
                 
 
-        kk_img = pg.transform.rotozoom(kk_img, a*45, 1.0)
+        kk_img = pg.transform.rotozoom(kk_img, muki*45, 1.0)
         screen.blit(kk_img, kk_rct)
         kk_rct.move_ip(sum_mv)
         if check_bound(kk_rct) != (True, True):
